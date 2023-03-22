@@ -43,12 +43,15 @@ export function findRootPathRoute(routes: RouteRecordRaw[]) {
     : '/'
 }
 
+
 export function filterRoutesFromLocalRoutes(
   route: OriginRoute,
   localRoutes: Array<RouteRecordRaw>,
   path = '/'
 ) {
+  // 在本地中查找
   const filterRoute = localRoutes.find((it) => {
+    // 类似path.resolve
     return resolve(path, it.path) === route.menuUrl
   })
   if (filterRoute) {
@@ -71,6 +74,7 @@ export function filterRoutesFromLocalRoutes(
       Array.isArray(filterRoute.children) &&
       filterRoute.children.length > 0
     ) {
+      // 这是干什么
       const tempChildren: RouteRecordRaw[] = []
       route.children.forEach((it) => {
         const childFilterRoute = filterRoutesFromLocalRoutes(it, filterRoute.children!, parentPath)
@@ -79,9 +83,18 @@ export function filterRoutesFromLocalRoutes(
       filterRoute.children = tempChildren
     }
   }
+  console.log("route",route)
+  console.log("localRoutes",localRoutes)
+  console.log("path",path)
+  console.log("filterRoute",filterRoute)
   return filterRoute
 }
-
+/**
+ * 是否是菜单
+ * 判断依据为：是否有children
+ * @param it 
+ * @returns 
+ */
 export function isMenu(it: OriginRoute) {
   return it.children && it.children.length > 0
 }
@@ -95,6 +108,8 @@ export function generatorRoutes(res: Array<OriginRoute>) {
   const tempRoutes: Array<RouteRecordRaw> = []
   res.forEach((it) => {
     const isMenuFlag = isMenu(it)
+    console.log("it=>",it)
+    console.log("asyncRoutes=>",asyncRoutes)
     const localRoute = isMenuFlag ? filterRoutesFromLocalRoutes(it, asyncRoutes) : null
     if (localRoute) {
       tempRoutes.push(localRoute as RouteRecordRaw)

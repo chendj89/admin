@@ -18,6 +18,7 @@ const service = Axios.create({
 
 service.interceptors.request.use(
   (config) => {
+    // 将用户的请求参数回填到headers
     !config.headers && (config.headers = {})
     if (!config.headers[CONTENT_TYPE]) {
       config.headers[CONTENT_TYPE] = APPLICATION_JSON
@@ -35,6 +36,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   (response: AxiosResponse): AxiosResponse => {
     if (response.status === 200) {
+      console.log(response)
       return response
     } else {
       throw new Error(response.status.toString())

@@ -11,6 +11,7 @@ import { constantRoutes } from '@/router/routes/constants'
 const usePermissionStore = defineStore('permission-route', {
   state: () => {
     return {
+      // 允许路由
       permissionRoutes: [] as RouteRecordRaw[],
     }
   },
@@ -30,6 +31,7 @@ const usePermissionStore = defineStore('permission-route', {
     async getRoutes(data: { userId: number; roleId: number }) {
       try {
         if (getMenuListByRoleId) {
+          // 获取路由
           const res = await post({
             url: baseAddress + getMenuListByRoleId,
             // 在实际的开发中，这个地方可以换成 token，让后端解析用户信息获取 userId 和 roleId，前端可以不用传 userId 和 roleId。
@@ -49,6 +51,8 @@ const usePermissionStore = defineStore('permission-route', {
     },
     async initPermissionRoute() {
       const userStore = useUserStore()
+      console.log("userStore",userStore);
+      
       // 加载路由
       const accessRoutes = await this.getRoutes({
         roleId: userStore.roleId,

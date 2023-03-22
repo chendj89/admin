@@ -19,6 +19,7 @@ export interface Response<T = any> {
 }
 
 function http<T = any>({ url, data, method, headers, beforeRequest, afterRequest }: HttpOption) {
+  console.log(`请求：${url},参数：`,data)
   const successHandler = (res: AxiosResponse<Response<T>>) => {
     if (res.data.code === 200) {
       return res.data
