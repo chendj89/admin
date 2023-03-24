@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-
+// 网页配置 比如主题、颜色、菜单宽度等
 import defaultSetting from '@/setting'
 import { LayoutMode, PageAnim, SideTheme, ThemeMode, DeviceType } from '../types'
 
@@ -11,6 +11,7 @@ const useAppConfigStore = defineStore('app-config', {
     return defaultSetting
   },
   getters: {
+    // 页面布局格式 水平 还是上下
     getLayoutMode(state) {
       return state.layoutMode
     },
@@ -28,6 +29,10 @@ const useAppConfigStore = defineStore('app-config', {
     changeSideBarTheme(sideTheme: SideTheme) {
       this.sideTheme = sideTheme
     },
+    /**
+     * 页面转场动画
+     * @param pageAnim
+     */
     changePageAnim(pageAnim: PageAnim) {
       this.pageAnim = pageAnim
     },

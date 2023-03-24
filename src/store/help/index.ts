@@ -5,6 +5,9 @@ import { RouteRecordRaw } from 'vue-router'
 import { OriginRoute, SplitTab } from '../types'
 import { MenuOption, NIcon } from 'naive-ui'
 import SvgIcon from '@/components/svg-icon/index.vue'
+/**
+ * 默认动态路由
+ */
 import { asyncRoutes } from '@/router/routes/async'
 import { LAYOUT } from '../keys'
 
@@ -29,7 +32,13 @@ export function getFilePath(it: OriginRoute) {
   it.localFilePath = resolve('/', it.localFilePath)
   return '/src/views' + it.localFilePath + '.vue'
 }
-
+/**
+ * 在所有路由中找到meta.isRootPath的路由
+ * 否则为第一个路由的第一个子路由
+ * 否则为/
+ * @param routes
+ * @returns
+ */
 export function findRootPathRoute(routes: RouteRecordRaw[]) {
   for (let index = 0; index < routes.length; index++) {
     const route = routes[index]
@@ -82,10 +91,6 @@ export function filterRoutesFromLocalRoutes(
       filterRoute.children = tempChildren
     }
   }
-  console.log('route', route)
-  console.log('localRoutes', localRoutes)
-  console.log('path', path)
-  console.log('filterRoute', filterRoute)
   return filterRoute
 }
 /**
@@ -103,6 +108,13 @@ export function getNameByUrl(menuUrl: string) {
   return toHump(temp[temp.length - 1])
 }
 
+/**
+ * 创建新的路由
+ * 如果当前缓存路由中有
+ * 否则
+ * @param res
+ * @returns
+ */
 export function generatorRoutes(res: Array<OriginRoute>) {
   const tempRoutes: Array<RouteRecordRaw> = []
   res.forEach((it) => {
@@ -110,12 +122,16 @@ export function generatorRoutes(res: Array<OriginRoute>) {
     console.log('it=>', it)
     console.log('asyncRoutes=>', asyncRoutes)
     const localRoute = isMenuFlag ? filterRoutesFromLocalRoutes(it, asyncRoutes) : null
+    // 如果已经有了 那么直接添加
     if (localRoute) {
       tempRoutes.push(localRoute as RouteRecordRaw)
     } else {
+      // 创建新的路由
       const route: RouteRecordRaw = {
+        // 判断是否是外链
         path: it.outLink && isExternal(it.outLink) ? it.outLink : it.menuUrl,
         name: it.routeName || getNameByUrl(it.menuUrl),
+        // 是否有子页面
         component: isMenuFlag ? LAYOUT : getComponent(it),
         meta: {
           hidden: !!it.hidden,
@@ -138,6 +154,11 @@ export function generatorRoutes(res: Array<OriginRoute>) {
   return tempRoutes
 }
 
+/**
+ * [a,[b,[c]]]=>[a,[b,c]]
+ * @param srcRoutes
+ * @returns
+ */
 export function mapTwoLevelRouter(srcRoutes: Array<RouteRecordRaw>) {
   function addParentRoute(routes: any, parent: any, parentPath: string) {
     routes.forEach((it: RouteRecordRaw) => {
@@ -150,6 +171,7 @@ export function mapTwoLevelRouter(srcRoutes: Array<RouteRecordRaw>) {
       }
     })
   }
+  // 判空
   if (srcRoutes && srcRoutes.length > 0) {
     const tempRoutes = [] as Array<RouteRecordRaw>
     srcRoutes.forEach((it) => {
@@ -165,7 +187,12 @@ export function mapTwoLevelRouter(srcRoutes: Array<RouteRecordRaw>) {
   }
   return []
 }
-
+/**
+ * 找到路由
+ * affix: 是否固定在标题栏， 对于有些页面，需要一直在标题栏中显示，则需要配置该属性为 true
+ * @param routes
+ * @returns
+ */
 export function findAffixedRoutes(routes: Array<RouteRecordRaw>) {
   const temp = [] as Array<RouteRecordRaw>
   routes.forEach((it) => {
@@ -175,7 +202,12 @@ export function findAffixedRoutes(routes: Array<RouteRecordRaw>) {
   })
   return temp
 }
-
+/**
+ * 找到路由
+ * cacheable: 是否可以缓存，对于有些页面，需要缓存，在重新回到该页面的时候，内容不会丢失。则需要配置该属性为 true
+ * @param routes
+ * @returns
+ */
 export function findCachedRoutes(routes: Array<RouteRecordRaw>) {
   const temp = [] as Array<string>
   routes.forEach((it) => {
@@ -202,10 +234,12 @@ export function transfromMenu(originRoutes: Array<RouteRecordRaw>): Array<MenuOp
     }
     return item.meta?.title || ''
   }
+  // 判空
   if (!originRoutes) {
     return []
   }
   const tempMenus: Array<MenuOption> = []
+  // 找到所有有meta的路由并且不隐藏
   originRoutes
     .filter((it) => {
       if (!it.meta) {
@@ -214,6 +248,7 @@ export function transfromMenu(originRoutes: Array<RouteRecordRaw>): Array<MenuOp
       return !it.meta.hidden
     })
     .forEach((it) => {
+      // 渲染菜单
       const tempMenu = {
         key: it.path,
         label: getLabel(it),
@@ -222,7 +257,9 @@ export function transfromMenu(originRoutes: Array<RouteRecordRaw>): Array<MenuOp
           it.meta?.icon
         ),
       } as MenuOption
+      // 渲染子菜单
       if (it.children) {
+        // 单子页面？
         if (it.meta && it.meta.isSingle && it.children.length === 1) {
           const item = it.children[0]
           tempMenu.key = resolve(tempMenu.key as string, item.path)
@@ -263,7 +300,12 @@ export function transformSplitTabMenu(routes: Array<RouteRecordRaw>): Array<Spli
   })
   return tempTabs
 }
-
+/**
+ * 渲染菜单图标
+ * @param iconPrefix
+ * @param icon
+ * @returns
+ */
 export function renderMenuIcon(iconPrefix: string, icon?: any) {
   if (!icon) {
     return undefined
@@ -277,8 +319,14 @@ export function renderMenuIcon(iconPrefix: string, icon?: any) {
         }),
     })
 }
-
+/**
+ * 给出路径从指定路由组中找到路由
+ * @param routes
+ * @param path
+ * @returns
+ */
 export function findRouteByUrl(routes: Array<any>, path: string): RouteRecordRaw | null {
+  // 判空
   if (!path || !routes) {
     return null
   }

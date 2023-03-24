@@ -1,6 +1,10 @@
 import { DataTableColumn, TreeSelectOption } from 'naive-ui'
 import { TablePropsType } from '@/types/components'
-
+/**
+ * 是否是外链
+ * @param path
+ * @returns
+ */
 export function isExternal(path: string) {
   return /^(https?:|mailto:|tel:)/.test(path)
 }

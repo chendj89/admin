@@ -1,3 +1,6 @@
+/**
+ * 响应信息
+ */
 export const baseData = {
   code: 200,
   data: '',
