@@ -43,7 +43,6 @@ export function findRootPathRoute(routes: RouteRecordRaw[]) {
     : '/'
 }
 
-
 export function filterRoutesFromLocalRoutes(
   route: OriginRoute,
   localRoutes: Array<RouteRecordRaw>,
@@ -83,17 +82,17 @@ export function filterRoutesFromLocalRoutes(
       filterRoute.children = tempChildren
     }
   }
-  console.log("route",route)
-  console.log("localRoutes",localRoutes)
-  console.log("path",path)
-  console.log("filterRoute",filterRoute)
+  console.log('route', route)
+  console.log('localRoutes', localRoutes)
+  console.log('path', path)
+  console.log('filterRoute', filterRoute)
   return filterRoute
 }
 /**
  * 是否是菜单
  * 判断依据为：是否有children
- * @param it 
- * @returns 
+ * @param it
+ * @returns
  */
 export function isMenu(it: OriginRoute) {
   return it.children && it.children.length > 0
@@ -108,8 +107,8 @@ export function generatorRoutes(res: Array<OriginRoute>) {
   const tempRoutes: Array<RouteRecordRaw> = []
   res.forEach((it) => {
     const isMenuFlag = isMenu(it)
-    console.log("it=>",it)
-    console.log("asyncRoutes=>",asyncRoutes)
+    console.log('it=>', it)
+    console.log('asyncRoutes=>', asyncRoutes)
     const localRoute = isMenuFlag ? filterRoutesFromLocalRoutes(it, asyncRoutes) : null
     if (localRoute) {
       tempRoutes.push(localRoute as RouteRecordRaw)

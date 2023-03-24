@@ -1,6 +1,9 @@
 import { toHump } from '@/utils'
 import { defineStore } from 'pinia'
 
+/**
+ * 缓存路由数据
+ */
 const useCachedRouteStore = defineStore('cached-routes', {
   state: () => {
     return {
@@ -21,6 +24,9 @@ const useCachedRouteStore = defineStore('cached-routes', {
     setCachedRoutes(cachedRoutes: string[] = []) {
       this.cachedRoutes = cachedRoutes
     },
+    /**
+     * 重置缓存路由
+     */
     resetCachedRoutes() {
       this.$reset()
     },

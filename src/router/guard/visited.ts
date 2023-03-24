@@ -2,9 +2,12 @@ import { findAffixedRoutes } from '@/store/help'
 import useVisitedRouteStore from '@/store/modules/visited-routes'
 import { RouteRecordRaw } from 'vue-router'
 import router from '..'
-
+/**
+ * 访问守卫
+ */
 function useVisitedGuard() {
   router.beforeEach((to) => {
+    // 白名单
     if (['404', '500', '403', 'not-found', 'Login'].includes(to.name as string)) {
       return true
     }
